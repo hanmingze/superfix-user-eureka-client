@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="..\bootstrap-3.3.7-dist\css\bootstrap.min.css"/>
+    <link rel="stylesheet" href="..\bootstrapvalidator\dist\css\bootstrapValidator.min.css"/>
+</head>
+<body onload="initPage()">
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="..\image\spufix.jpg" width="260px" height="170px" class="img-rounded">
+    </div>
+    <div class="col-md-4" style="padding-top: 49px;padding-left: 0px">
+        <h2>欢迎注册</h2>
+    </div>
+
+    <div class="col-md-2" >
+        <div align="right" style="padding-right: 10px">
+       <h4 style="color: #8c8c8c;padding-top: 70px">
+           已有账号？
+       </h4>
+            </div>
+    </div>
+    <div class="col-md-2" style="color: #8c8c8c;padding-top: 78px">
+        <a href="..\user\goLogin">请登录</a>
+    </div>
+</div>
+<hr>
+<div class="row" style="padding-left: 200px">
+    <div class="col-md-8" >
+        <form class="form-horizontal col-md-8"  action="/user/register" method="post">
+            <div class="form-group">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-user"></span>
+                    </span>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="您的账户名或用户名"
+                   required  title="用户只能以字母开头包含数字的格式组成" onblur="chickName()"
+                    >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8" id="spaName"></div>
+            </div>
+            <div class="form-group">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock"></span>
+                    </span>
+                    <input type="password" name="password" id="pwd" class="form-control" placeholder="建议至少使用两种字符组合"
+                   required title="建议使用字母、数字和符号两种以上的组合，6~18个字符" onblur="chickPwd()"
+                    >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8" id="spaPwd"></div>
+            </div>
+            <div class="form-group">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock" ></span>
+                    </span>
+                    <input type="password" id="repeatPwd" class="form-control" placeholder="请再次输入密码"
+                           required title="请在此输入密码" onblur="chickRepPwd()"
+                    >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8" id="spaRepPwd"></div>
+            </div>
+            <div class="form-group">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-phone" ></span>
+                    </span>
+                    <input type="text" name="phone" id="phone" class="form-control" placeholder="建议使用常用手机"
+                           required title="请在此输入正确的手机号" onblur="chickPhone()"
+                    >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8" id="spaPhone"></div>
+            </div>
+            <div class="form-group">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-envelope" ></span>
+                    </span>
+                    <input type="text" name="email" id="email" class="form-control" placeholder="请使用有效的邮箱"
+                           required title="请在此输入正确的邮箱" onblur="chickEmail()">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8" id="spaEmail"></div>
+            </div>
+            <div class="form-group">
+                <div class="input-group input-group-lg col-md-8">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                    <input type="text" name="verCode" id="verCode" class="form-control" placeholder="请输入验证码"
+                           required title="请在此输入验证码" onblur="numCode()"
+                    >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8" id="spaCode"></div>
+            </div>
+            <div class="form-group">
+                <div class="input-group input-group-lg col-md-4">
+                    <span class="input-group-addon">
+                        <img th:src="${'http://localhost:8000/images/'+session.verifyCode}" width="80" height="35" id="codeImg" class="img-rounded">
+                    </span>
+                    <span class="input-group-addon">
+                        <button type="button" class="btn btn-default" onclick="btFlush()">
+                            <span class="glyphicon glyphicon-refresh"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="radio" style="padding-left: 50px">
+                    <label>
+                        <input type="checkbox" id="agree" value="" onclick="clickAgree()">阅读并同意 <a href="https://wwww.baidu.com">superfix用户注册协议</a>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8">
+                    <button type="submit" id="subForm" class="btn btn-danger btn-lg" onclick="allCheck()">注  册</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="..\bootstrap-3.3.7-dist\js\jquery.min.js"></script>
+<script  src="..\bootstrap-3.3.7-dist\js\bootstrap.min.js"></script>
+<script src="..\bootstrapvalidator\dist\js\bootstrapValidator.min.js"></script>
+<script src="..\js\index.js"></script>
+</body>
+</html>
