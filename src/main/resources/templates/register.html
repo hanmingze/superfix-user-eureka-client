@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>注册</title>
-    <link rel="stylesheet" href="..\bootstrap-3.3.7-dist\css\bootstrap.min.css"/>
-    <link rel="stylesheet" href="..\bootstrapvalidator\dist\css\bootstrapValidator.min.css"/>
+    <link rel="stylesheet" href=".\bootstrap-3.3.7-dist\css\bootstrap.min.css"/>
+    <link rel="stylesheet" href=".\bootstrapvalidator\dist\css\bootstrapValidator.min.css"/>
 </head>
 <body onload="initPage()">
 
 <div class="row">
     <div class="col-md-4">
-        <img src="..\image\spufix.jpg" width="260px" height="170px" class="img-rounded">
+        <img src=".\image\spufix.jpg" width="260px" height="170px" class="img-rounded">
     </div>
     <div class="col-md-4" style="padding-top: 49px;padding-left: 0px">
         <h2>欢迎注册</h2>
@@ -24,13 +24,14 @@
             </div>
     </div>
     <div class="col-md-2" style="color: #8c8c8c;padding-top: 78px">
-        <a href="..\user\goLogin">请登录</a>
+        <a href="./goLogin">请登录</a>
     </div>
 </div>
 <hr>
 <div class="row" style="padding-left: 200px">
     <div class="col-md-8" >
-        <form class="form-horizontal col-md-8"  action="/user/register" method="post">
+        <form class="form-horizontal col-md-8"  action="./saveUser" method="post">
+            <input type="hidden" name="token" th:value="${session.SPRINGMVC.TOKEN}">
             <div class="form-group">
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon">
@@ -111,7 +112,7 @@
             <div class="form-group">
                 <div class="input-group input-group-lg col-md-4">
                     <span class="input-group-addon">
-                        <img th:src="${'http://localhost:8000/images/'+session.verifyCode}" width="80" height="35" id="codeImg" class="img-rounded">
+                        <img th:src="${'http://169.254.29.36:8000/images/'+session.verifyCode}" width="80" height="35" id="codeImg" class="img-rounded">
                     </span>
                     <span class="input-group-addon">
                         <button type="button" class="btn btn-default" onclick="btFlush()">
@@ -136,9 +137,9 @@
     </div>
 </div>
 
-<script src="..\bootstrap-3.3.7-dist\js\jquery.min.js"></script>
-<script  src="..\bootstrap-3.3.7-dist\js\bootstrap.min.js"></script>
-<script src="..\bootstrapvalidator\dist\js\bootstrapValidator.min.js"></script>
-<script src="..\js\index.js"></script>
+<script src=".\bootstrap-3.3.7-dist\js\jquery.min.js"></script>
+<script  src=".\bootstrap-3.3.7-dist\js\bootstrap.min.js"></script>
+<script src=".\bootstrapvalidator\dist\js\bootstrapValidator.min.js"></script>
+<script src=".\js\register.js"></script>
 </body>
 </html>

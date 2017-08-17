@@ -23,7 +23,7 @@ public class DcController {
         String hmz = stringEncryptor.encrypt("hmz");
         return hmz;
     }
-    @GetMapping("/dc")
+    @GetMapping("dc")
     public String dc() throws InterruptedException {
         String services = "Services: " + discoveryClient.getServices();
         System.out.println("服务端得到请求的服务信息:"+services);

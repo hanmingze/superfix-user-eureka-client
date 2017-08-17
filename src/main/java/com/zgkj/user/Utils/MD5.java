@@ -21,9 +21,7 @@ public class MD5 {
         String newstr=base64en.encode(md5.digest(str.getBytes("utf-8")));
         return newstr;
     }
-    /**判断用户密码是否正确
-     *newpasswd  用户输入的密码
-     *oldpasswd  正确密码*/
+
     public static boolean checkpassword(String newpasswd, String oldpasswd, User user) throws NoSuchAlgorithmException, UnsupportedEncodingException{
         if(EncoderByMd5(newpasswd).equals(oldpasswd)&&user!=null){
             return true;

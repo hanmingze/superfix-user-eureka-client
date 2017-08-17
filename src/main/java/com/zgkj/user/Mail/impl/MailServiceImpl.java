@@ -5,9 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import javax.mail.internet.MimeMessage;
 
 
 /**
@@ -25,16 +26,15 @@ public class MailServiceImpl implements MailService {
     private String from;
 
     @Override
-    public void sendSimpleMail(String to, String subject, String content) {
-
-
-                SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom(from);
-                message.setTo(to);
-                message.setSubject(subject);
-                message.setText(content);
-
+    public void sendSimpleMail(String to, String subject, String content){
+        MimeMessage message = mailSender.createMimeMessage();
                 try {
+                    MimeMessageHelper helper = new MimeMessageHelper(message, true,"utf-8");
+                    helper.setFrom(this.from);
+                    helper.setTo(to);
+                    helper.setSubject(subject);
+                    helper.setText(content, true);
+                    helper.setFrom(this.from);
                     mailSender.send(message);
                     logger.info("简单邮件已经发送。");
                 } catch (Exception e) {

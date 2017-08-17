@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <link rel="stylesheet" href=".\bootstrap-3.3.7-dist\css\bootstrap.min.css"/>
+    <link rel="stylesheet" href=".\bootstrapvalidator\dist\css\bootstrapValidator.min.css"/>
+</head>
+<body onload="pageOnLoad()">
+<div class="row">
+    <div class="col-md-3">
+        <img src=".\image\spufix.jpg" width="260px" height="170px" class="img-rounded">
+    </div>
+    <div class="col-md-2" style="padding-top: 49px;padding-left: 0px">
+    <h2>个人中心</h2>
+</div>
+    <div class="col-md-1" style="padding-top: 69px;padding-left: 0px">
+    <a href=""><h4>首页</h4></a>
+</div>
+    <div class="col-md-1" style="padding-top: 69px;padding-left: 0px">
+        <a href=""><h4>社区</h4></a>
+    </div>
+    <div class="col-md-1" style="padding-top: 69px;padding-left: 0px">
+        <a href=""><h4>消息</h4></a>
+    </div>
+    <div class="col-md-2" style="padding-top: 69px;padding-left: 0px">
+        <a href=""><h4>我的订单</h4></a>
+    </div>
+    <div class="col-md-2" style="color: #8c8c8c;padding-top: 78px">
+        <a href=".\goLogin">请登录</a>
+       <span>丨</span>
+        <a href=".\goRegister">免费注册</a>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-md-3">
+        <ul>
+            <li>
+                <a href=""><h4>个人信息</h4></a>
+            </li>
+            <li>
+                <a href=""><h4>账户安全</h4></a>
+            </li>
+            <li>
+                <a href=""><h4>账号绑定</h4></a>
+            </li>
+            <li>
+                <a href=""><h4>消费记录</h4></a>
+            </li>
+            <li>
+                <a href=""><h4>快捷支付</h4></a>
+            </li>
+            <li>
+                <a href=""><h4>收货地址</h4></a>
+            </li>
+            <li>
+                <a href=""><h4>增票资质</h4></a>
+            </li>
+            <li>
+                <a href=""><h4>企业发票</h4></a>
+            </li>
+        </ul>
+    </div>
+        <div class="col-md-9">
+            <a href="">完善个人信息</a>
+            <span>丨</span>
+            <a href="">头像设置</a>
+        </div>
+    <div class="col-md-4">
+        <form class="form-horizontal" action=".\saveOrUpdateUser" method="post">
+            <div class="form-group">
+                <input type="hidden" name="id" th:value="${session.user.id}">
+                <label  class="col-sm-2 control-label">用户名</label>
+                <div class="col-sm-10">
+                    <input type="text"  class="form-control" id="set_username" name="username" th:value="${session.user.username}" onblur="return chick_userName()" required >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-10" id="setName">
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">密码</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="set_pwd" name="password" th:value="${session.user.password}"  onblur="return chick_pwd()" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-10" id="setPwd"></div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">性别</label>
+                <div class="col-sm-10">
+                    <input type="radio"  id="set_sex1" name="sex" th:value="${session.user.sex}"  required>&nbsp;&nbsp;男
+                    <input type="radio"  id="set_sex2" name="sex" th:value="${session.user.sex}"  required>&nbsp;&nbsp;女
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">地址</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="set_address" name="address"  onblur="return chick_address()" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-10" id="setAddress"></div>
+            </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                         <button type="submit" class="btn btn-info" id="setBtn">提  交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src=".\bootstrap-3.3.7-dist\js\jquery.min.js"></script>
+<script  src=".\bootstrap-3.3.7-dist\js\bootstrap.min.js"></script>
+<script src=".\bootstrapvalidator\dist\js\bootstrapValidator.min.js"></script>
+<script  src=".\js\mySetting.js"></script>
+</body>
+</html>

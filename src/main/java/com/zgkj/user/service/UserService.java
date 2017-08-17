@@ -49,10 +49,10 @@ public interface UserService {
     String findByEmail(String email);
 
     /**
-     * 注册
+     * 添加
      * @param user
      */
-    void register(User user);
+    void save(User user);
     /**
      * 根据uuid查询user
      * @param uuid
@@ -78,4 +78,17 @@ public interface UserService {
      * @param id
      */
     void deleteById(Integer id);
+    /**
+     * 根据username和email验证用户
+     * @param username
+     * @param email
+     * @return
+     */
+    User findByEmailAndUsername(String email,String username);
+    /**
+     * 根据email查询user
+     * @param email
+     * @return
+     */
+    User findUserByEmail(String email);
 }

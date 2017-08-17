@@ -12,19 +12,19 @@ function chickName() {
  var username =$("#username").val();
     var pattern=/^[a-zA-Z]{1}[0-9a-zA-Z_]{1,}$/;
  if(username.trim()==''){
-     $("#spaName").html("<font color='#dc143c'>用户名不能为空</font>");
-   //  $("#username").focus();
+     $("#setName").html("<font color='#dc143c'>用户名不能为空</font>");
+    $("#username").focus();
      $("#subForm").attr("disabled","disabled");
      return false
  }
  if(!pattern.test(username)){
      $("#spaName").html("<font color='#dc143c'>用户名只允许使用大小写字母开头加数字的组合</font>");
-   //  $("#username").focus();
+  $("#username").focus();
      $("#subForm").attr("disabled","disabled");
      return false
  }
     $.ajax({
-        url:"/user/findUserByName",
+        url:"./findUserByName",
         data:{"username":username},
         type:"POST",
         success:function(data){
@@ -50,13 +50,13 @@ function chickPwd() {
     var reg = /^[A-Za-z0-9]{6,20}$/;
     if(pwd.trim()==''){
         $("#spaPwd").html("<font color='#dc143c'>密码不能为空</font>");
-    //    $("#pwd").focus();
+   //    $("#pwd").focus();
         $("#subForm").attr("disabled","disabled");
         return false
     }
     if(!reg.test(pwd)){
         $("#spaPwd").html("<font color='#dc143c'>密码规则为6-20位字母数字组合</font>");
-     //   $("#pwd").focus();
+  //     $("#pwd").focus();
         $("#subForm").attr("disabled","disabled");
         return false
     }
@@ -72,7 +72,7 @@ function chickRepPwd() {
     var repeatPwd=$("#repeatPwd").val();
     if(repeatPwd.trim()==''){
         $("#spaRepPwd").html("<font color='#dc143c'>重复密码不能为空</font>");
-      //  $("#repeatPwd").focus();
+   //     $("#repeatPwd").focus();
         $("#subForm").attr("disabled","disabled");
         return false
     }
@@ -94,18 +94,18 @@ function chickPhone(){
     var rep=/^1[34578]\d{9}$/;
     if(phone.trim()==''){
         $("#spaPhone").html("<font color='#dc143c'>手机号不能为空</font>");
-    //    $("#phone").focus();
+        $("#phone").focus();
         $("#subForm").attr("disabled","disabled");
         return false
     }
     if(!rep.test(phone)){
         $("#spaPhone").html("<font color='#dc143c'>手机号输入有误，请重填</font>");
-     //   $("#phone").focus();
+        $("#phone").focus();
         $("#subForm").attr("disabled","disabled");
         return false
     }
     $.ajax({
-        url:"/user/findUserByPhone",
+        url:"./findUserByPhone",
         data:{"phone":phone},
         type:"POST",
         success:function(data){
@@ -128,18 +128,18 @@ function chickEmail() {
     var ree=/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
     if(email.trim()==''){
         $("#spaEmail").html("<font color='#dc143c'>邮箱不能为空</font>");
-     //   $("#email").focus();
+       $("#email").focus();
         $("#subForm").attr("disabled","disabled");
         return false
     }
     if(!ree.test(email)){
         $("#spaEmail").html("<font color='#dc143c'>邮箱格式不合法，请重填</font>");
-   //     $("#email").focus();
+        $("#email").focus();
         $("#subForm").attr("disabled","disabled");
         return false
     }
     $.ajax({
-        url:"/user/findUserByEmail",
+        url:"./findUserByEmail",
         data:{"email":email},
         type:"POST",
         success:function(data){
@@ -160,11 +160,12 @@ function numCode() {
     var verCode=$("#verCode").val();
     if(verCode.trim()==""){
         $("#spaCode").html("<font color='#dc143c'>请填写验证码</font>");
+        $("#verCode").focus();
         $("#subForm").attr("disabled","disabled");
         return false
     }
     $.ajax({
-        url:"/user/checkVerCode",
+        url:"./checkVerCode",
         data:{"verCode":verCode},
         type:"POST",
         success:function(data){
@@ -191,16 +192,11 @@ function clickAgree() {
 }
 function btFlush() {
     $.ajax({
-        url:"/user/flushImages",
+        url:"./flushImages",
         type:"POST",
         success:function(data){
           $("#codeImg").attr("src",data);
         }
     });
 }
-/*
-function allCheck() {
-    if(chickName()&&chickPwd()&&chickRepPwd()&&chickPhone()&&chickEmail()){
 
-    }
-}*/

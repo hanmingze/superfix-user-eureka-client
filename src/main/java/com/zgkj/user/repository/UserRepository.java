@@ -3,8 +3,6 @@ package com.zgkj.user.repository;
 import com.zgkj.user.pojo.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.UUID;
-
 /**
  * Created by 韩明泽 on 2017/8/4.
  * user管理jpa模板
@@ -65,4 +63,18 @@ public interface UserRepository extends JpaRepository<User,Integer> {
      * @return
      */
     User findByUuidAndId(String uuid,Integer id);
+
+    /**
+     * email、username验证User
+     * @param email
+     * @param username
+     * @return
+     */
+    User findByEmailAndUsername(String email,String username);
+    /**
+     * 根据email查询user
+     * @param email
+     * @return
+     */
+    User findUserByEmail(String email);
 }

@@ -1,10 +1,11 @@
 package com.zgkj.user.controller;
 
 import com.zgkj.user.Mail.MailService;
+import com.zgkj.user.Utils.InvertCodeGenerator;
 import com.zgkj.user.Utils.MD5;
 import com.zgkj.user.pojo.User;
-import com.zgkj.user.repository.UserRepository;
 import com.zgkj.user.service.UserService;
+import com.zgkj.user.token.TokenHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,8 +35,6 @@ public class UserController {
     private UserService userService;
     @Autowired
     private MailService mailService;
-
-
     /**
      * 进入登陆html的方法
      * @return
@@ -59,9 +58,9 @@ public class UserController {
         System.out.println(file.getPath());
         session.setAttribute("verifyCode",file.getName());
         outputImage(w, h, file, verifyCode);
+        TokenHandler.generateGUID(session);
         return "register";
     }
-
     /**
      * 进入找回密码界面
      * @return
@@ -69,6 +68,15 @@ public class UserController {
     @RequestMapping("goRetrievePwd")
     public String goRetrievePwd(){
         return "retrievePwd";
+    }
+
+    /**
+     * 进入个人中心界面
+     * @return
+     */
+    @RequestMapping("goMySetting")
+    public String goMySetting(){
+        return "mySetting";
     }
     /**
      * 登陆
@@ -98,7 +106,7 @@ public class UserController {
             return "success";
         }
         else {
-            model.addAttribute("errorMsg", "http://localhost:6201/user/goForget");
+            model.addAttribute("errorMsg", "http://169.254.29.36:6201/user/goRetrievePwd");
             return "login";
         }
     }
@@ -152,7 +160,7 @@ public class UserController {
         session.setAttribute("verStr",verifyCode);
         File file = new File(dir, verifyCode +System.currentTimeMillis()+ ".jpg");
         outputImage(w, h, file, verifyCode);
-        return "http://localhost:8000/images/"+file.getName();
+        return "http://169.254.29.36:8000/images/"+file.getName();
     }
     /**
      * ajax验证码校验
@@ -181,30 +189,30 @@ public class UserController {
     @RequestMapping(value ="register",method = RequestMethod.POST)
     public String register(User user) throws Exception{
         user.setUuid(user.getUsername()+UUID.randomUUID());
+        user.setPassword(MD5.EncoderByMd5(user.getPassword()));
         long createTime=System.currentTimeMillis();
         user.setCreatetime(createTime);
-        userService.register(user);
+        userService.save(user);
         User user1 = userService.findByUuid(user.getUuid());
         Date date=new Date(createTime);
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy年MM月dd日HH:mm:ss");
         String cTime = sdf.format(date);
         mailService.sendSimpleMail(user.getEmail(),
-                "superfix邮箱激活验证","<!DOCTYPE html>\n" +
+                "superfix邮箱激活验证","<!DOCTYPE html>" +
                         "<html lang=\"en\">\n" +
-                        "<head>\n" +
+                        "<head>" +
                         "    <meta charset=\"UTF-8\">\n" +
-                        "    <title>Title</title>\n" +
-                        "</head>\n" +
-                        "<body>\n" +
+                        "    <title>邮箱激活</title>" +
+                        "</head>" +
+                        "<body>" +
                         "<h2 style='color:blueviolet;'>激活账号</h2><br/><p>你好！"+user.getUsername()+"   " +
-                        "欢迎注册账号</p><br/><p>请在1小时内点击下面的链接完成账号激活</p><br/>" +
-                        "<a href='http://169.254.29.36:6201/user/emailActivate/"+user.getUuid()+"/"+user1.getId()+">https://wwww.superfix/user/"+user.getUuid()+".com</a><br/>" +
+                        "欢迎注册账号</p><br/><p>请在5分钟内点击下面的链接完成账号激活，如果不是本人操作请忽略本信息</p><br/>" +
+                        "<a href='http://169.254.29.36:6201/user/emailActivate/"+user.getUuid()+"/"+user1.getId()+"'>https://www.superfix/user/"+user.getUuid()+".com</a><br/>" +
                         "<p>注册时间:"+cTime+"</p>"+
-                        "</body>\n" +
+                        "</body>" +
                         "</html>");
-           return "register";
+                  return "redirect:goRegister";
     }
-
     /**
      * 激活账号
      * @param uuid
@@ -216,14 +224,130 @@ public class UserController {
         User user = userService.findByUuidAndId(uuid, id);
           if(user!=null){
               user.setActiv(1);
-              userService.register(user);
+              userService.save(user);
           }
         long nowTime = System.currentTimeMillis();
         User user1= userService.findById(id);
           if((nowTime)-(user1.getCreatetime())>=300000L){
-              userService.deleteById(user1.getId());
+              user1.setActiv(0);
+              userService.save(user1);
           }
         return "ok";
     }
 
+    /**
+     * 三种条件验证User
+     * @param account
+     * @return
+     */
+    @RequestMapping(value = "findUserByAccount",method = RequestMethod.POST)
+    @ResponseBody
+    public String findUserByAccount(String account){
+        String byUsername = userService.findByUsername(account);
+        String byEmail = userService.findByEmail(account);
+        String byPhone = userService.findByPhone(account);
+        if(byUsername.equals("1")){
+            return byUsername;
+        }
+        else if(byEmail.equals("1")){
+            return byEmail;
+        }
+        else if(byPhone.equals("1")){
+            return byPhone;
+        }
+        else{
+            return "nonentity";
+        }
+    }
+    /**
+     * 根据username和email验证用户
+     * @param email
+     * @param account
+     * @return
+     */
+    @RequestMapping(value ="findUserByEmailAndUsername/{email}/{account}")
+    @ResponseBody
+    public String findUserByEmailAndUsername(@PathVariable String email,@PathVariable String account,HttpSession session){
+        System.out.println(email+"     "+account);
+        User user = userService.findByEmailAndUsername(email, account);
+        if(user!=null){
+            System.out.println("user不为空");
+            String str="1";
+            String newPwd=InvertCodeGenerator.genCodes();
+              session.setAttribute("newPwd",newPwd);
+
+            mailService.sendSimpleMail(email,"superfix重置密码","" +
+                    "<!DOCTYPE html>" +
+                    "<html lang='en'>" +
+                    "<head>" +
+                    "<meta charset='UTF-8'>" +
+                    "<title>重置密码</title>" +
+                    "</head>" +
+                    "<body>" +
+                    "<h2 style='color:blueviolet;'>重置密码</h2><br/>" +
+                    "请记住这个验证码"+"&nbsp;&nbsp;<h4 style='color:red;'>"+newPwd+"</h4>"+
+                    "<br/>如果不是本人请忽略本次文本内容"+
+                    "</body>" +
+                    "</html>");
+            return str;
+        }
+        return "nonentity";
+    }
+    /**
+     * ajax验证验证码
+     * @param code
+     * @param session
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value ="resetPwd",method = RequestMethod.POST)
+    @ResponseBody
+    public String resetPwd(String code,HttpSession session) throws Exception{
+        String newPwd = (String) session.getAttribute("newPwd");
+        if (code.equals(newPwd)){
+           //
+            return "1";
+        }
+           return "2";
+    }
+
+    /**
+     * 重置密码
+     * @param email
+     * @param code
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="resetPwdSuccess",method = RequestMethod.POST)
+    public String resetPwdSuccess(String email,String code) throws Exception{
+           User user = userService.findUserByEmail(email);
+          user.setActiv(1);
+          user.setPassword(MD5.EncoderByMd5(code));
+          userService.save(user);
+          return "redirect:goLogin";
+    }
+    /**
+     * 个人中心管理
+     * @param user
+     * @return
+     */
+    @RequestMapping(value="saveOrUpdateUser",method=RequestMethod.POST)
+    public String saveOrUpdateUser(User user){
+          userService.save(user);
+          return "redirect:goLogin";
+    }
+    /**
+     * 验证重复提交
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "saveUser",method = RequestMethod.POST)
+    public String saveUser(HttpServletRequest request,Model model){
+        boolean validToken = TokenHandler.validToken(request);
+        if(!validToken){
+            return "msg";
+        }
+        return "forward:register";
+    }
 }
+

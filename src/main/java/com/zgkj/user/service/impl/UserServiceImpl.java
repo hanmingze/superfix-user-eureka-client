@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService{
      * @param user
      */
     @Override
-    public void register(User user) {
+    public void save(User user) {
      userRepository.save(user);
     }
 
@@ -118,13 +118,40 @@ public class UserServiceImpl implements UserService{
         return userRepository.findByUuidAndId(uuid, id);
     }
 
+    /**
+     * 根据id查寻User
+     * @param id
+     * @return
+     */
     @Override
     public User findById(Integer id) {
         return userRepository.findOne(id);
     }
+    /**
+     * 根据id删除用户
+     * @param id
+     */
+    @Override
+    public void deleteById(Integer id) {userRepository.delete(id);
+    }
+    /**
+     * 根据username和email验证用户
+     * @param username
+     * @param email
+     * @return
+     */
 
     @Override
-    public void deleteById(Integer id) {
-        userRepository.delete(id);
+    public User findByEmailAndUsername(String email,String username) {
+        return userRepository.findByEmailAndUsername(email,username);
+    }
+    /**
+     * 根据email查询
+     * @param email
+     * @return
+     */
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 }
